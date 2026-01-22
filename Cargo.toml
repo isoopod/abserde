@@ -1,0 +1,3 @@
+[workspace]
+members = ["abserde-cli"]
+resolver = "3"

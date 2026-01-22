@@ -10,4 +10,7 @@
 
 sourcemap.json
 
+target
 abserde-cli/target
+
+abserde_project/

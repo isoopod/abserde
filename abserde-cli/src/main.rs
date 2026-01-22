@@ -1,3 +1,7 @@
-fn main() {
-    println!("Hello, world!");
+mod cli;
+mod commands;
+
+fn main() -> anyhow::Result<()> {
+    let cli = cli::parse();
+    commands::dispatch(cli)
 }
