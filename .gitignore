@@ -1,5 +1,5 @@
 # Project place file
-/abserde.rbxlx
+/abserde.rbxl*
 
 # Roblox Studio lock files
 /*.rbxlx.lock
@@ -9,3 +9,5 @@
 *_packages/
 
 sourcemap.json
+
+abserde-cli/target
