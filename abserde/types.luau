@@ -1,4 +1,5 @@
-local Promise = require("../roblox_packages/Promise")
+local Pack = require(script.Parent.roblox_packages.Pack)
+local Promise = require(script.Parent.roblox_packages.Promise)
 
 export type Profile<T> = {
 	Open: <T>(self: Profile<T>, user: user) -> Session<T>,
@@ -25,17 +26,37 @@ export type Session<T> = {
 	AtomicRemove: (self: Session<T>, key: string) -> Promise.TypedPromise<boolean>,
 }
 
-export type KeyOptions = {
-	lockable: boolean, -- [true] A locked key cannot be modified by other servers
-	autoLoad: boolean, -- [true] Automatically loads the key when the session is opened, otherwise will be loaded when indexed
+export type KeyOptions<T> = {
+	Schema: _AbserdeSchema<T>,
+	Lockable: boolean, -- [true] A locked key cannot be modified by other servers
+	AutoLoad: boolean, -- [true] Automatically loads the key when the session is opened, otherwise will be loaded when indexed
 }
 
 export type Key<T> = {
+	Options: KeyOptions<T>,
 	Data: T,
+	Default: T,
 	_dirty: boolean, -- Do we have unsaved changes?
 	_lastSaved: number?,
 }
 
+export type _AbserdeSchema<T> = {
+	schema: Pack.Schema<T>,
+	name: string,
+	version: number,
+}
+
 type user = Player | number
+
+export type Abserde = {}
+
+type instNode<T, V> = V & T
+export type AbserdeProject = instNode<Folder, {
+	Schemas: instNode<Folder, {
+		Snapshots: instNode<Folder, { [string]: { [string]: ModuleScript } }>,
+		[string]: ModuleScript,
+	}>,
+	Profiles: instNode<Folder, { [string]: ModuleScript }>,
+}>
 
 return nil

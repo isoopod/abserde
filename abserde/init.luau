@@ -1,12 +1,18 @@
+-- Services
+local ServerScriptService = game:GetService("ServerScriptService")
 -- Modules
 local Pack = require(script.roblox_packages.Pack)
 
-local abserde = {}
+local PROJECT = assert(ServerScriptService:FindFirstChild("abserde_project"), "No abserde_project found in ServerScriptService, create one with `abserde init`.")
 
-abserde.Pack = Pack :: Pack.Datatypes
+local Abserde = {}
 
-function abserde.Schema<T, U>(format: U, encode: ((T) -> U)?, decode: ((U) -> T)?)
+Abserde.Pack = Pack :: Pack.Datatypes
+
+function Abserde.Schema<T, U>(file: ModuleScript, format: U, encode: ((T) -> U)?, decode: ((U) -> T)?)
+	local schemaName = file.Name
+	local lastVersion
 	local schema = Pack:Define(Pack.Transformer(Pack.Struct(format), encode, decode))
 end
 
-return abserde
+return Abserde
