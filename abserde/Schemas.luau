@@ -28,14 +28,22 @@ end
 -- Creates a schema, used inside Schema files
 -- `file` should just be `script`
 function Schemas.Schema<T, U>(file: ModuleScript, format: U, encode: ((T) -> U)?, decode: ((U) -> T)?): types._AbserdeSchema<T>
-	local schemaName = file.Name
-	local _, lastestVersion = Schemas.GetLatestSnapshot(schemaName)
 	local schema = Pack:Define(Pack.Transformer(Pack.Struct(format), encode, decode))
+
+	local schemaName = file.Name
+	-- If this is a snapshot, the name will be the version number
+	local version = tonumber(schemaName)
+
+	-- Otherwise this is the main schema file
+	if not version then
+		local _, lastestVersion = Schemas.GetLatestSnapshot(schemaName)
+		version = lastestVersion + 1
+	end
 
 	return {
 		schema = schema,
 		name = schemaName,
-		version = lastestVersion + 1,
+		version = version :: number,
 	}
 end
 
@@ -49,7 +57,7 @@ end
 function Schemas.GetSchema(schemaName: string, version: number?): types._AbserdeSchema<any>?
 	local latestSnapshot, latestVersion = Schemas.GetLatestSnapshot(schemaName)
 	local targetVersion = version or latestVersion
-	if not latestSnapshot then return requireSchema(PROJECT.Schemas:FindFirstChild(schemaName)) end
+	if not latestSnapshot then return requireSchema(PROJECT.Schemas:FindFirstChild(schemaName) :: ModuleScript) end
 	if latestVersion == targetVersion then return requireSchema(latestSnapshot) end
 
 	local snapshotsFolder: Folder = assert(PROJECT.Schemas.Snapshots:FindFirstChild(schemaName) :: any)
